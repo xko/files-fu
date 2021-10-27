@@ -1,0 +1,5 @@
+from(bucket: "FilesFromYou")
+ |> range(stop: 2021-10-27T20:00:45Z, start: 2021-10-27T18:00:25Z)
+ |> pivot( rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
+ |> group(columns:["version"] )
+ |> keep(columns: ["version","ourCPU","filesShared"]) 
