@@ -1,4 +1,4 @@
-name := "files-from-you"
+name := "files-fu"
 version := "0.1"
 
 scalaVersion := "2.13.6"
