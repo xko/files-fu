@@ -4,8 +4,6 @@
 
 bucket=FilesFU
 
-influx bucket delete -n $bucket
-influx bucket create -n $bucket
 influx write $@ --header "#constant measurement,cpu" \
                 --header "#datatype tag,double,double,dateTime:RFC3339" \
                 -b $bucket -f data.csv

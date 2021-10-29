@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+
+curl --request POST https://us-west-2-1.aws.cloud2.influxdata.com/write?db=FilesFU \
+  --user "xxkkoo@gmail.com:$INFLUX_TOKEN" \
+  --data-binary "measurement,host=host1 field1=2i,field2=2.0 1577836800000000000"
