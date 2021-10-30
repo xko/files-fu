@@ -4,3 +4,4 @@
 /.bsp
 
 **/target/
+**/*auth.properties
