@@ -6,10 +6,16 @@ scalaVersion := "2.13.6"
 scalacOptions ++= Seq("-deprecation", "-feature")
 
 val AkkaVersion = "2.6.14"
+val AkkaHttpVersion = "10.2.6"
 libraryDependencies ++= Seq(
   "com.lightbend.akka" %% "akka-stream-alpakka-influxdb" % "3.0.3",
-  "com.typesafe.akka" %% "akka-stream" % AkkaVersion
-)
+  "com.typesafe.akka" %% "akka-stream" % AkkaVersion,
+  "com.typesafe.akka" %% "akka-http" % AkkaHttpVersion,
+  "com.typesafe.akka" %% "akka-http-spray-json" % AkkaHttpVersion,
+  "com.typesafe.akka" %% "akka-testkit" % AkkaVersion % Test,
+  "com.typesafe.akka" %% "akka-stream-testkit" % AkkaVersion % Test,
+  "com.typesafe.akka" %% "akka-http-testkit" % AkkaHttpVersion % Test,
+  )
 
 configs(IntegrationTest)
 Defaults.itSettings
