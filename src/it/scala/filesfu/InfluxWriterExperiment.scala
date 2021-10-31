@@ -1,10 +1,12 @@
+package filesfu
+
 import akka.actor.ActorSystem
 import akka.stream.alpakka.influxdb.InfluxDbWriteMessage
 import akka.stream.alpakka.influxdb.scaladsl.InfluxDbSink
 import akka.stream.scaladsl.Source
 import com.typesafe.config.ConfigFactory
-import org.influxdb.{InfluxDB, InfluxDBFactory}
 import org.influxdb.dto.Point
+import org.influxdb.{InfluxDB, InfluxDBFactory}
 import org.scalatest.funspec.AnyFunSpec
 
 import scala.concurrent.duration._
