@@ -1,26 +1,23 @@
 package filesfu.collector
 
 import akka.actor.ActorSystem
-import akka.http.javadsl.common.{EntityStreamingSupport, JsonEntityStreamingSupport}
+import akka.http.scaladsl.common.{EntityStreamingSupport, JsonEntityStreamingSupport}
 import akka.http.scaladsl.server.Directives.{asSourceOf, complete, entity, path}
 import akka.http.scaladsl.server.Route
-
-import scala.concurrent.Future
+import akka.stream.scaladsl.{Keep, Sink}
 
 object Routes {
   def streamingPOC(implicit system: ActorSystem): Route = {
-    implicit val jsonStreamingSupport: JsonEntityStreamingSupport = EntityStreamingSupport.json()
+    implicit val jsonStreamingSupport = EntityStreamingSupport.json()
 
     import system.dispatcher
     path("stream") {
+      val coll = Sink.fold[Set[String], String](Set.empty[String])(_ + _)
       import Protocol._
       entity(asSourceOf[Protocol.Session]) { sessions =>
-        // alternative syntax:
-        // entity(as[Source[Measurement, NotUsed]]) { measurements =>
-        val runningSessions: Future[Int] =
-          sessions.runFold(0) { (ss, s) => if (s.started) ss + 1 else ss - 1 }
+        val ss = sessions.map(_.id).toMat(coll)(Keep.right).run()
         complete {
-          runningSessions.map(n => Map("msg" -> s"""Sessions still running: $n"""))
+          ss.map(s => Map("msg" -> s"""Unique sessions: ${s.size}"""))
         }
       }
     }
