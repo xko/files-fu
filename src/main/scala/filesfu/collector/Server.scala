@@ -5,7 +5,8 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.stream.scaladsl.Flow
-import filesfu.collector.Protocol._
+import filesfu.collector.protocol._
+import filesfu.collector.protocol.JSON._
 
 import scala.util.{Failure, Success}
 

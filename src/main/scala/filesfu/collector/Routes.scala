@@ -6,7 +6,8 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.unmarshalling.FromByteStringUnmarshaller
 import akka.stream.scaladsl.Flow
-import Protocol._
+import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
+import spray.json.DefaultJsonProtocol._
 
 import scala.concurrent.Future
 
