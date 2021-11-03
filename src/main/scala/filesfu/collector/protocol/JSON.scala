@@ -16,6 +16,5 @@ object JSON extends SprayJsonSupport with DefaultJsonProtocol {
       }
     }
 
-  implicit val session = jsonFormat5(Session.apply)
-  implicit val cpu = jsonFormat3(CPU.apply)
+  implicit val session = jsonFormat6(Session.apply)
 }

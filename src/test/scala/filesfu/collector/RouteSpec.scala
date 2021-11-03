@@ -16,23 +16,23 @@ class RouteSpec  extends AnyWordSpec with Matchers with ScalaFutures with Scalat
      "receive sessions " in {
        val data = HttpEntity(
          ContentTypes.`application/json`,
-         """{"id":"12344","version":"604", "timestamp": 1635967999}
-           |{"id":"12342","version":"420", "timestamp":0, "state": "start" }
-           |{"id":"ahhh","version":"ohh", "timestamp": 1635967999, "state": "shutdown"}
-           |{"id":"OMG","version":"LOL","user":"Sally","timestamp":1635966999}
-           |{"id":"ahhh", "state": "sync","version":"ohhhh", "garbage": "trash", "timestamp":640, "user": "Harry"}
+         """{"sessionID":"12344","version":"604", "timestamp": 1635967999}
+           |{"sessionID":"12342","version":"420", "timestamp":0, "state": "start" }
+           |{"sessionID":"OMG","version":"LOL","userID":"Sally","timestamp":1635966999}
+           |{"sessionID":"ahhh","version":"ohh", "timestamp": 1635967999, "state": "shutdown", "cpu": 0.6}
+           |{"sessionID":"ahhh", "state": "sync","version":"ohhhh", "garbage": "trash", "timestamp":640, "userID": "Harry"}
            |
-           |{"id":"arghhh","timestamp":0}
+           |{"sessionID":"arghhh","timestamp":0, "cpu": 0.88}
            |""".stripMargin)
        val probe = TestProbe()
        val f = Flow[Session].alsoTo(Sink.actorRef(probe.testActor,"done",_=>"failed"))
        Post().withEntity(data) ~> Routes.streaming(f) ~> check {
-         probe.expectMsgAllOf(Session(1635967999,"12344",None,Some("604"), None),
-                              Session(0, "12342", Some(SessionState.start), Some("420"), None),
-                              Session(1635967999, "ahhh", Some(SessionState.shutdown), Some("ohh"), None),
-                              Session(1635966999, "OMG", None, Some("LOL"), Some("Sally")),
-                              Session(640, "ahhh", Some(SessionState.sync), Some("ohhhh"), Some("Harry")),
-                              Session(0, "arghhh", None, None, None)
+         probe.expectMsgAllOf(Session(1635967999,"12344",None,Some("604"), None, None),
+                              Session(0, "12342", Some(SessionState.start), Some("420"), None, None),
+                              Session(1635967999, "ahhh", Some(SessionState.shutdown), Some("ohh"), None, Some(.6)),
+                              Session(1635966999, "OMG", None, Some("LOL"), Some("Sally"), None),
+                              Session(640, "ahhh", Some(SessionState.sync), Some("ohhhh"), Some("Harry"),None),
+                              Session(0, "arghhh", None, None, None,Some(.88))
                               )
          status shouldBe StatusCodes.OK
          responseAs[String] shouldBe """{"msg":"Total messages received: 6"}"""

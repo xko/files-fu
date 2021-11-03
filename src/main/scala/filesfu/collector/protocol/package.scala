@@ -5,18 +5,16 @@ package object protocol {
     val start, login, sync, run, shutdown, over = Value
   }
 
-  case class Session(timestamp: Long, id: String,
-                     state: Option[SessionState.Value], version: Option[String], user: Option[String])
+  case class Session(timestamp: Long, sessionID: String,
+                     state: Option[SessionState.Value], version: Option[String], userID: Option[String],
+                     cpu: Option[Double])
 
 
   implicit object FileState extends Enumeration {
     val share, hash, seed, send, request, receive, remove, gone = Value
   }
 
-  case class File(timestamp: Long, id: String, session: String,
+  case class File(timestamp: Long, fileID: String, session: String,
                   state: Option[FileState.Value], haveBytes: Option[Long], totalBytes: Option[Long])
-
-
-  case class CPU(timestamp: Long, session: String, cpu: Double)
 
 }

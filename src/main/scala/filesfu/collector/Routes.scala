@@ -1,5 +1,6 @@
 package filesfu.collector
 
+import akka.NotUsed
 import akka.actor.ActorSystem
 import akka.http.scaladsl.common.EntityStreamingSupport
 import akka.http.scaladsl.server.Directives._
@@ -14,7 +15,7 @@ import scala.concurrent.Future
 object Routes {
   implicit val jsonStreamingSupport = EntityStreamingSupport.json()
 
-  def streaming[In: FromByteStringUnmarshaller](via: Flow[In, _, _])(implicit system: ActorSystem): Route = {
+  def streaming[In: FromByteStringUnmarshaller](via: Flow[In, _, NotUsed])(implicit system: ActorSystem): Route = {
     import system.dispatcher
     withoutSizeLimit {
       entity(asSourceOf[In]) { msgs =>
