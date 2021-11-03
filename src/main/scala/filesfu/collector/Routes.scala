@@ -4,22 +4,22 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.common.EntityStreamingSupport
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
-import akka.stream.scaladsl.{Keep, Sink}
+import akka.http.scaladsl.unmarshalling.FromByteStringUnmarshaller
+import akka.stream.scaladsl.Flow
+import Protocol._
+
+import scala.concurrent.Future
 
 object Routes {
-  def streamingPOC(implicit system: ActorSystem): Route = {
-    implicit val jsonStreamingSupport = EntityStreamingSupport.json()
+  implicit val jsonStreamingSupport = EntityStreamingSupport.json()
 
+  def streaming[In: FromByteStringUnmarshaller](via: Flow[In, _, _])(implicit system: ActorSystem): Route = {
     import system.dispatcher
-    path("stream") {
-      val coll = Sink.fold[Set[String], String](Set.empty[String])(_ + _)
-      import Protocol._
-      withoutSizeLimit {
-        entity(asSourceOf[Protocol.Session]) { sessions =>
-          val ss = sessions.map(_.id).toMat(coll)(Keep.right).run()
-          complete {
-            ss.map(s => Map("msg" -> s"""Unique sessions: ${s.size}"""))
-          }
+    withoutSizeLimit {
+      entity(asSourceOf[In]) { msgs =>
+        val evTotal: Future[Int] = msgs.via(via).runFold(0) { (total, _) => total + 1 }
+        complete {
+          evTotal.map(total => Map("msg" -> s"""Total messages received: $total"""))
         }
       }
     }

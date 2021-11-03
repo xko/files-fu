@@ -20,9 +20,9 @@ class RouteSpec  extends AnyWordSpec with Matchers with ScalaFutures with Scalat
            |{"id":"OMG","version":"LOL","starting": false,"timestamp":0}
            |{"id":"1ee234","version":"420","starting": false,"timestamp":0}
            |""".stripMargin)
-       Post("/stream",entity = data) ~> Routes.streamingPOC ~> check {
+       Post("/streams/sessions",entity = data) ~> Server.routes ~> check {
          status shouldBe StatusCodes.OK
-         responseAs[String] shouldBe """{"msg":"Unique sessions: 5"}"""
+         responseAs[String] shouldBe """{"msg":"Total messages received: 8"}"""
        }
 
     }

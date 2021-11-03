@@ -2,17 +2,25 @@ package filesfu.collector
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
+import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
+import akka.stream.scaladsl.Flow
+import filesfu.collector.Protocol._
 
-import scala.concurrent.ExecutionContextExecutor
 import scala.util.{Failure, Success}
 
 
 object Server {
+  implicit val system: ActorSystem = ActorSystem("FilesFU")
+  import system.dispatcher
+
+  val routes = pathPrefix("streams"){
+    concat(
+      path("sessions")(Routes.streaming(Flow[Session]))
+    )
+  }
 
   def start(routes: Route)(implicit system: ActorSystem): Unit = {
-    implicit val eX: ExecutionContextExecutor = system.dispatcher
-
     val futureBinding = Http().newServerAt("0.0.0.0", 8080).bind(routes)
     futureBinding.onComplete {
       case Success(binding) =>
@@ -25,9 +33,7 @@ object Server {
   }
 
   def main(args: Array[String]): Unit = {
-    implicit val system: ActorSystem = ActorSystem("InfluxWriterExperiment")
-    start(Routes.streamingPOC)
-
+    start(routes)
   }
 
 }
