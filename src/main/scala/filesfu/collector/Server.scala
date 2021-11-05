@@ -5,8 +5,11 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.stream.scaladsl.Flow
+import com.typesafe.config.ConfigFactory
 import filesfu.collector.protocol._
 import filesfu.collector.protocol.JSON._
+import filesfu.collector.protocol.InfluxPoints._
+import org.influxdb.{InfluxDB, InfluxDBFactory}
 
 import scala.util.{Failure, Success}
 
@@ -15,9 +18,21 @@ object Server {
   implicit val system: ActorSystem = ActorSystem("FilesFU")
   import system.dispatcher
 
+  val conf = ConfigFactory.load().getConfig("influxdb")
+
+  implicit val influxDB: InfluxDB = InfluxDBFactory.connect(
+    "%s://%s:%s".format(conf.getString("protocol"), conf.getString("hostname"),conf.getString("port")) ,
+    conf.getString("authentication.user"), conf.getString("authentication.password")
+    ).setDatabase(conf.getString("database"))
+
+
   val routes = pathPrefix("streams"){
     concat(
-      path("sessions")(Routes.streaming(Flow[Session]))
+      path("sessions") {
+        post {
+          Routes.streaming(Influx.writer[Session]())
+        }
+      }
     )
   }
 
