@@ -65,8 +65,8 @@ class InfluxIntegration extends AnyWordSpec with Matchers with ScalatestRouteTes
                             (shutdown, normal, 5.seconds),
                             (over, normal, 0.seconds)
                             )
-      val sessionCount = 5
-      forAll(users, versions, Gen.uuid, phases, minSuccessful(sessionCount))(postSession)
+      val sessionCount = minSuccessful(5)
+      forAll(users, versions, Gen.uuid, phases, sessionCount)(postSession)
     }
 
     "post normal sessions" in {
@@ -78,8 +78,8 @@ class InfluxIntegration extends AnyWordSpec with Matchers with ScalatestRouteTes
                             (shutdown, normal, 5.seconds),
                             (over, normal, 0.seconds)
                             )
-      val sessionCount = 5
-      forAll(users, versions, Gen.uuid, phases, minSuccessful(sessionCount))(postSession)
+      val sessionCount = minSuccessful(5)
+      forAll(users, versions, Gen.uuid, phases, sessionCount)(postSession)
     }
 
 
