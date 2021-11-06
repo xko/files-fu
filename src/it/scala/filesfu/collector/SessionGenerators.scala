@@ -12,15 +12,15 @@ trait SessionGenerators {
   type CPU = Double
   type EpochMs = Long
 
-  val normal =           frequency( 90 -> choose(.05, .15), 30 -> choose(.15, .25),
-                                    10 -> choose(.25, .35), 3 -> choose(.40, .50) )
-  val normalWithSurges = frequency( 80 -> normal,
-                                    10  -> choose(.85, .88), 10 -> choose(.88, .95) )
-  val high =             frequency( 5 -> choose(.05, .15), 20 -> choose(.15, .25),
-                                    20 -> choose(.25, .35), 30 -> choose(.40, .50),
-                                    10 -> choose(.50, .60) )
-  val highWithSurges =   frequency( 80 -> high,
-                                    10  -> choose(.85, .88), 10 -> choose(.88, .95) )
+  val normal = frequency( 90 -> choose(.05, .15), 30 -> choose(.15, .25),
+                          10 -> choose(.25, .35), 3 -> choose(.40, .50) )
+  val high =   frequency( 5 -> choose(.05, .15), 20 -> choose(.15, .25),
+                          20 -> choose(.25, .35), 30 -> choose(.40, .50),
+                          10 -> choose(.50, .60) )
+
+  var extreme = choose(.85,.95)
+  val normalWithSurges = frequency( 80 -> normal, 20 -> extreme )
+  val highWithSurges =   frequency( 80 -> high,   20 -> extreme )
 
   def higher(gen: Gen[CPU]) = gen.map(cpu => cpu * .70 + .30)
 
