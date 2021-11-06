@@ -39,7 +39,7 @@ trait SessionGenerators {
     case (state, cpus, duration) :: tail =>
       val times = startAt to startAt + duration.toMillis by IntervalMs
       for { thiz <- listOfExactlyN(times.size, cpus).map(_.zip(times)).map(state -> Phase(startAt, _))
-            others <- phaseGen(startAt + duration.toMillis, tail: _*)
+            others <- phaseGen(startAt + duration.toMillis + 1, tail: _*)
       } yield others + thiz
   }
 
