@@ -2,8 +2,9 @@ package filesfu.collector.protocol
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import spray.json.{DefaultJsonProtocol, DeserializationException, JsString, JsValue, RootJsonFormat}
+import Messages._
 
-object JSON extends SprayJsonSupport with DefaultJsonProtocol {
+object JSONMarshalling extends SprayJsonSupport with DefaultJsonProtocol {
   implicit def enumFormat[T <: Enumeration](implicit enu: T): RootJsonFormat[T#Value] =
     new RootJsonFormat[T#Value] {
       def write(obj: T#Value): JsValue = JsString(obj.toString)

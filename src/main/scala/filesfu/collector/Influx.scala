@@ -10,8 +10,8 @@ import org.influxdb.dto.Point
 
 object Influx  {
 
-  def writer[T](perGroup: Int = 5, parGroups:Int = 20)(implicit db:InfluxDB, marshaller: Flow[T,Point,_]) =
-    Flow[T] via marshaller via pointWriter(perGroup, parGroups)
+  def writer[T](perGroup: Int = 5, parGroups:Int = 20)(implicit db:InfluxDB, marshaller: T=>Point) =
+    Flow[T] map marshaller via pointWriter(perGroup, parGroups)
 
   def pointWriter(perGroup: Int = 5, parGroups:Int = 20)(implicit db:InfluxDB): Flow[Point, InfluxDbWriteResult[Point, NotUsed], NotUsed] =
     Flow[Point] map InfluxDbWriteMessage.apply via grouper(InfluxDbFlow.create(), perGroup, parGroups) mapConcat identity

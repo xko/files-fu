@@ -5,11 +5,11 @@ import akka.http.scaladsl.testkit.ScalatestRouteTest
 import akka.stream.scaladsl.{Flow, Keep, Sink}
 import akka.stream.testkit.scaladsl.TestSink
 import akka.testkit.TestProbe
-import filesfu.collector.protocol.{Session, SessionState}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import protocol.JSON._
+import protocol.JSONMarshalling._
+import protocol.Messages._
 
 class RouteSpec  extends AnyWordSpec with Matchers with ScalaFutures with ScalatestRouteTest {
   "streaming route" should {

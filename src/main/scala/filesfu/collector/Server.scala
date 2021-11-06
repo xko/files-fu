@@ -6,9 +6,9 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.stream.scaladsl.Flow
 import com.typesafe.config.ConfigFactory
-import filesfu.collector.protocol._
-import filesfu.collector.protocol.JSON._
-import filesfu.collector.protocol.InfluxPoints._
+import filesfu.collector.protocol.Messages._
+import filesfu.collector.protocol.JSONMarshalling._
+import filesfu.collector.protocol.InfluxMarshalling._
 import org.influxdb.{InfluxDB, InfluxDBFactory}
 
 import scala.util.{Failure, Success}

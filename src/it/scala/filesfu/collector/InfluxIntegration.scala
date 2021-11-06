@@ -3,14 +3,12 @@ package filesfu.collector
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes}
 import akka.http.scaladsl.testkit.{RouteTestTimeout, ScalatestRouteTest}
 import akka.testkit.TestDuration
-import filesfu.collector.protocol.SessionState
-import org.scalacheck.Gen._
+import filesfu.collector.protocol.Messages._
 import org.scalacheck.{Gen, Shrink}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-import java.time.Instant
 import java.util.UUID
 import scala.concurrent.duration._
 
@@ -44,7 +42,7 @@ class InfluxIntegration extends AnyWordSpec with Matchers with ScalatestRouteTes
     val Path = "/streams/sessions"
     import SessionState._
 
-    def postSession(user: String, version: String, sid: UUID, phase: Map[protocol.SessionState.Value, Phase]) = {
+    def postSession(user: String, version: String, sid: UUID, phase: Map[SessionState.Value, Phase]) = {
       postLines(Path, s"{\"sessionID\":\"$sid\", \"version\": \"$version\", \"state\":\"start\", \"timestamp\": ${phase(start).startAt} }")
       postCPU(Path, sid.toString, phase(start).cpus: _*)
       postLines(Path, s"{\"sessionID\":\"$sid\", \"userID\": \"$user\", \"state\":\"login\", \"timestamp\": ${phase(login).startAt} }")

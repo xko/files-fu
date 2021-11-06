@@ -1,6 +1,6 @@
 package filesfu.collector
 
-import filesfu.collector.protocol.SessionState
+import filesfu.collector.protocol.Messages._
 import org.scalacheck.Gen
 import org.scalacheck.Gen._
 

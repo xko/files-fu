@@ -1,6 +1,6 @@
-package filesfu.collector
+package filesfu.collector.protocol
 
-package object protocol {
+object Messages {
   implicit object SessionState extends Enumeration {
     val start, login, sync, running, shutdown, over = Value
   }
