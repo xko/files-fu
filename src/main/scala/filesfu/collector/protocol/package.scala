@@ -2,7 +2,7 @@ package filesfu.collector
 
 package object protocol {
   implicit object SessionState extends Enumeration {
-    val start, login, sync, run, shutdown, over = Value
+    val start, login, sync, running, shutdown, over = Value
   }
 
   case class Session(timestamp: Long, sessionID: String,
