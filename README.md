@@ -10,8 +10,8 @@ This is a proof-of-concept demo, addressing some aspects of the [home assignment
 
 The task is very open-ended, and the assgnment allows much room for the interpretation. A lot of work where therefore put into extracting the requriements, 
 coming up with reasonable assumptions, making implementation choices etc - this is all documented in the [tickets](../../issues/). 
-Most important are collected on [Overview board](../../projects/5), 
-which aims to provide good coverage of the features requested by the assignment and the questions it opens for discussion - both implemented and omitted in this demo.
+Most important are collected on [Overview board](../../projects/5), please refer there for technical discussion, design notes etc. 
+This README focuses further on now to build and run the demo.  
 
 ### Running it
 
