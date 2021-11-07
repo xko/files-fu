@@ -1,15 +1,16 @@
 package filesfu
 
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes}
-import akka.http.scaladsl.testkit.ScalatestRouteTest
+import akka.http.scaladsl.testkit.{RouteTestTimeout, ScalatestRouteTest}
+import akka.testkit.TestDuration
 import filesfu.collector.Server
 import filesfu.collector.protocol.Messages.SessionState
-import org.scalacheck.{Gen, Shrink}
 import org.scalacheck.Gen.{choose, frequency, listOfN}
+import org.scalacheck.{Gen, Shrink}
 import org.scalatest.Suite
 import org.scalatest.matchers.should.Matchers
 
-import scala.concurrent.duration.Duration
+import scala.concurrent.duration._
 
 trait ITCommon extends ScalatestRouteTest with Matchers { this: Suite =>
   type CPU = Double
@@ -44,10 +45,13 @@ trait ITCommon extends ScalatestRouteTest with Matchers { this: Suite =>
            others <- phaseGen(startAt + duration.toMillis + 1, tail: _*)
            } yield others + thiz
   }
+
+  def justPost(path: String, text: String) = {
+    Post(path).withEntity(HttpEntity(ContentTypes.`application/json`, text)) ~> Server.routes
+  }
+
   def postLines(path: String, lines: String*) = {
-    println(lines.mkString("\n"))
-    Post(path).withEntity(HttpEntity(ContentTypes.`application/json`, lines.mkString("\n"))) ~>
-      Server.routes ~> check {
+    justPost(path, lines.mkString("\n")) ~> check {
       status shouldBe StatusCodes.OK
       responseAs[String] shouldBe s"{\"msg\":\"Total messages received: ${lines.size}\"}"
     }
@@ -63,6 +67,7 @@ trait ITCommon extends ScalatestRouteTest with Matchers { this: Suite =>
   implicit def noShrink[T]: Shrink[T] = Shrink.shrinkAny
   // https://gist.github.com/davidallsopp/f65d73fea8b5e5165fc3#gistcomment-2339650
 
+  implicit val timeout = RouteTestTimeout(10.seconds.dilated)
 
 
 }

@@ -1,7 +1,5 @@
 package filesfu
 
-import akka.http.scaladsl.testkit.RouteTestTimeout
-import akka.testkit.TestDuration
 import filesfu.collector.protocol.Messages._
 import org.scalacheck.Gen
 import org.scalatest.matchers.should.Matchers
@@ -12,11 +10,6 @@ import java.util.UUID
 import scala.concurrent.duration._
 
 class Simulation extends AnyWordSpec with Matchers with ScalaCheckPropertyChecks with ITCommon {
-
-  implicit val timeout = RouteTestTimeout(10.seconds.dilated)
-
-
-
 
   "client" can  {
     val Path = "/streams/sessions"
