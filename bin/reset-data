@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+set -x
+
+bucket=FilesFU
+
+influx bucket delete -n $bucket
+influx bucket create -n $bucket
+
+bucket_info=($(influx bucket list | grep $bucket))
+bucket_id=${bucket_info[0]}
+
+# for 1.x compatibilty https://docs.influxdata.com/influxdb/cloud/reference/api/influxdb-1x/write/
+if [ -n "$bucket_id" ]; then
+  influx v1 dbrp create --db "$bucket" --rp autogen --bucket-id "$bucket_id"  --default
+fi
