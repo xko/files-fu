@@ -32,7 +32,7 @@ class Simulation extends AnyWordSpec with Matchers with ScalaCheckPropertyChecks
       val phases = phaseGen(System.currentTimeMillis() - 3600000,
                             (start, normal, 2.seconds),
                             (login, highWithSurges, 4.seconds),
-                            (running, higher(normal), 10.seconds),
+                            (running, normal, 10.seconds),
                             (shutdown, normal, 5.seconds),
                             (over, normal, 0.seconds)
                             )
