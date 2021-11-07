@@ -41,6 +41,6 @@ Use the following SBT commands:
 - `it:testOnly filesfu.Simulation` : a simulation, feeding random data to illustrate particular scenario. After this is done, reports in the next section should show something sensible
    - the [source](src/it/scala/filesfu/Simulation.scala) can be modified to alter the scenario
 - `run` : to simply run the server to play with it using `curl` or similar tool
-  - it currently only supports `POST` at the path `/sessions` and accepts JSONN messages - one per line. The message structure is defined
+  - it currently only supports `POST` at the path `/sessions` and accepts JSON messages - one per line. The message structure is defined
     in [Messages.scala](src/main/scala/filesfu/collector/protocol/Messages.scala)
 
