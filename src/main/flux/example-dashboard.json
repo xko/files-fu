@@ -1,0 +1,426 @@
+{
+ "meta": {
+  "version": "1",
+  "type": "dashboard",
+  "name": "FilesFU report-Template",
+  "description": "template created from dashboard: FilesFU report"
+ },
+ "content": {
+  "data": {
+   "type": "dashboard",
+   "attributes": {
+    "name": "FilesFU report",
+    "description": ""
+   },
+   "relationships": {
+    "label": {
+     "data": []
+    },
+    "cell": {
+     "data": [
+      {
+       "type": "cell",
+       "id": "086886af28f31000"
+      },
+      {
+       "type": "cell",
+       "id": "086887dd78b31000"
+      },
+      {
+       "type": "cell",
+       "id": "0868886b3d26c000"
+      },
+      {
+       "type": "cell",
+       "id": "0869aa570abf2000"
+      }
+     ]
+    },
+    "variable": {
+     "data": []
+    }
+   }
+  },
+  "included": [
+   {
+    "id": "086886af28f31000",
+    "type": "cell",
+    "attributes": {
+     "x": 0,
+     "y": 0,
+     "w": 5,
+     "h": 4
+    },
+    "relationships": {
+     "view": {
+      "data": {
+       "type": "view",
+       "id": "086886af28f31000"
+      }
+     }
+    }
+   },
+   {
+    "id": "086887dd78b31000",
+    "type": "cell",
+    "attributes": {
+     "x": 6,
+     "y": 0,
+     "w": 5,
+     "h": 4
+    },
+    "relationships": {
+     "view": {
+      "data": {
+       "type": "view",
+       "id": "086887dd78b31000"
+      }
+     }
+    }
+   },
+   {
+    "id": "0868886b3d26c000",
+    "type": "cell",
+    "attributes": {
+     "x": 0,
+     "y": 4,
+     "w": 5,
+     "h": 4
+    },
+    "relationships": {
+     "view": {
+      "data": {
+       "type": "view",
+       "id": "0868886b3d26c000"
+      }
+     }
+    }
+   },
+   {
+    "id": "0869aa570abf2000",
+    "type": "cell",
+    "attributes": {
+     "x": 6,
+     "y": 4,
+     "w": 5,
+     "h": 4
+    },
+    "relationships": {
+     "view": {
+      "data": {
+       "type": "view",
+       "id": "0869aa570abf2000"
+      }
+     }
+    }
+   },
+   {
+    "type": "view",
+    "id": "086886af28f31000",
+    "attributes": {
+     "name": "CPU max / session",
+     "properties": {
+      "shape": "chronograf-v2",
+      "type": "histogram",
+      "queries": [
+       {
+        "text": "src     = from(bucket: \"FilesFU\") |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\ncpu     = src |> filter(fn: (r) => r._field == \"cpu\" )\r\n\r\n\r\ncpu |> group(columns: [\"sessionID\"])\r\n    |> window(every: 5s) |> mean()\r\n    |> group(columns: [\"sessionID\"]) |> max()",
+        "editMode": "advanced",
+        "name": "",
+        "builderConfig": {
+         "buckets": [],
+         "tags": [
+          {
+           "key": "_measurement",
+           "values": [],
+           "aggregateFunctionType": "filter"
+          }
+         ],
+         "functions": [
+          {
+           "name": "mean"
+          }
+         ],
+         "aggregateWindow": {
+          "period": "auto",
+          "fillValues": false
+         }
+        }
+       }
+      ],
+      "colors": [
+       {
+        "id": "a9e744df-b711-45bd-b8f8-8d79a58d4ad9",
+        "type": "scale",
+        "hex": "#31C0F6",
+        "name": "Nineteen Eighty Four",
+        "value": 0
+       },
+       {
+        "id": "0eec59d4-1747-4974-bc25-1f8299d1a3e1",
+        "type": "scale",
+        "hex": "#A500A5",
+        "name": "Nineteen Eighty Four",
+        "value": 0
+       },
+       {
+        "id": "1bf5af6a-9834-4187-b03d-9905c7759b4a",
+        "type": "scale",
+        "hex": "#FF7E27",
+        "name": "Nineteen Eighty Four",
+        "value": 0
+       }
+      ],
+      "xColumn": "_value",
+      "fillColumns": [],
+      "xDomain": [
+       0,
+       1
+      ],
+      "xAxisLabel": "CPU max",
+      "position": "stacked",
+      "binCount": 30,
+      "note": "",
+      "showNoteWhenEmpty": false,
+      "legendColorizeRows": true,
+      "legendHide": false,
+      "legendOpacity": 1,
+      "legendOrientationThreshold": 100000000
+     }
+    }
+   },
+   {
+    "type": "view",
+    "id": "086887dd78b31000",
+    "attributes": {
+     "name": "CPU max / session, version",
+     "properties": {
+      "shape": "chronograf-v2",
+      "type": "histogram",
+      "queries": [
+       {
+        "text": "src     = from(bucket: \"FilesFU\") |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\ncpu     = src |> filter(fn: (r) => r._field == \"cpu\" )\r\n\r\nversions = src |> filter(fn: (r) => exists r.version ) \r\n               |> keep(columns: [\"version\",\"sessionID\"])\r\n\r\nrichCpu = join( tables: {v:versions,cpu:cpu}, on: [\"sessionID\"])\r\n\r\nrichCpu \r\n    |> group(columns: [\"sessionID\",\"version\"])\r\n    |> window(every: 5s) |> mean()\r\n    |> group(columns: [\"sessionID\",\"version\"]) |> max()",
+        "editMode": "advanced",
+        "name": "",
+        "builderConfig": {
+         "buckets": [],
+         "tags": [
+          {
+           "key": "_measurement",
+           "values": [],
+           "aggregateFunctionType": "filter"
+          }
+         ],
+         "functions": [
+          {
+           "name": "mean"
+          }
+         ],
+         "aggregateWindow": {
+          "period": "auto",
+          "fillValues": false
+         }
+        }
+       }
+      ],
+      "colors": [
+       {
+        "id": "a9e744df-b711-45bd-b8f8-8d79a58d4ad9",
+        "type": "scale",
+        "hex": "#31C0F6",
+        "name": "Nineteen Eighty Four",
+        "value": 0
+       },
+       {
+        "id": "0eec59d4-1747-4974-bc25-1f8299d1a3e1",
+        "type": "scale",
+        "hex": "#A500A5",
+        "name": "Nineteen Eighty Four",
+        "value": 0
+       },
+       {
+        "id": "1bf5af6a-9834-4187-b03d-9905c7759b4a",
+        "type": "scale",
+        "hex": "#FF7E27",
+        "name": "Nineteen Eighty Four",
+        "value": 0
+       }
+      ],
+      "xColumn": "_value",
+      "fillColumns": [
+       "version"
+      ],
+      "xDomain": [
+       0,
+       1
+      ],
+      "xAxisLabel": "CPU max",
+      "position": "stacked",
+      "binCount": 30,
+      "note": "",
+      "showNoteWhenEmpty": false,
+      "legendColorizeRows": true,
+      "legendHide": false,
+      "legendOpacity": 1,
+      "legendOrientationThreshold": 100000000
+     }
+    }
+   },
+   {
+    "type": "view",
+    "id": "0868886b3d26c000",
+    "attributes": {
+     "name": "v700: CPU max / session, state",
+     "properties": {
+      "shape": "chronograf-v2",
+      "type": "histogram",
+      "queries": [
+       {
+        "text": "selectedVersion = \"700\"\r\nsrc     = from(bucket: \"FilesFU\") |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\ncpu     = src |> filter(fn: (r) => r._field == \"cpu\" )\r\n\r\n\r\nversions = src |> filter(fn: (r) => r.version == selectedVersion) \r\n               |> keep(columns: [\"version\",\"sessionID\"])\r\nstates   = src |> filter(fn: (r) => exists r.sessionState )\r\n               |> keep(columns: [\"sessionState\",\"sessionID\",\"_time\"])    \r\n\r\nrichCpu = join( tables: {v:versions,cpu:cpu}, on: [\"sessionID\"])\r\n\r\nricherCpu  = join(tables: {\"cpu\":richCpu, \"state\":states}, on: [\"sessionID\"]) \r\n               |> filter(fn: (r) => r[\"_time_state\"] < r[\"_time_cpu\"] )\r\n               |> group(columns: [\"_value\",\"_time_cpu\"]) |> max(column: \"_time_state\")\r\n               |> rename(columns: {\"_time_cpu\":\"_time\"}) \r\n\r\n// yield richerCpu\r\n\r\nricherCpu \r\n    |> group(columns: [\"sessionID\", \"sessionState\",\"version\"])\r\n    |> window(every: 5s) |> mean()\r\n    |> group(columns: [\"sessionID\", \"sessionState\", \"version\"]) |> max()",
+        "editMode": "advanced",
+        "name": "",
+        "builderConfig": {
+         "buckets": [],
+         "tags": [
+          {
+           "key": "_measurement",
+           "values": [],
+           "aggregateFunctionType": "filter"
+          }
+         ],
+         "functions": [
+          {
+           "name": "mean"
+          }
+         ],
+         "aggregateWindow": {
+          "period": "auto",
+          "fillValues": false
+         }
+        }
+       }
+      ],
+      "colors": [
+       {
+        "id": "a9e744df-b711-45bd-b8f8-8d79a58d4ad9",
+        "type": "scale",
+        "hex": "#31C0F6",
+        "name": "Nineteen Eighty Four",
+        "value": 0
+       },
+       {
+        "id": "0eec59d4-1747-4974-bc25-1f8299d1a3e1",
+        "type": "scale",
+        "hex": "#A500A5",
+        "name": "Nineteen Eighty Four",
+        "value": 0
+       },
+       {
+        "id": "1bf5af6a-9834-4187-b03d-9905c7759b4a",
+        "type": "scale",
+        "hex": "#FF7E27",
+        "name": "Nineteen Eighty Four",
+        "value": 0
+       }
+      ],
+      "xColumn": "_value",
+      "fillColumns": [
+       "sessionState"
+      ],
+      "xDomain": [
+       0,
+       1
+      ],
+      "xAxisLabel": "CPU max",
+      "position": "stacked",
+      "binCount": 30,
+      "note": "",
+      "showNoteWhenEmpty": false,
+      "legendColorizeRows": true,
+      "legendHide": false,
+      "legendOpacity": 1,
+      "legendOrientationThreshold": 100000000
+     }
+    }
+   },
+   {
+    "type": "view",
+    "id": "0869aa570abf2000",
+    "attributes": {
+     "name": "v != 700: CPU max / session, state",
+     "properties": {
+      "shape": "chronograf-v2",
+      "type": "histogram",
+      "queries": [
+       {
+        "text": "src     = from(bucket: \"FilesFU\") |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\ncpu     = src |> filter(fn: (r) => r._field == \"cpu\" )\r\n\r\n\r\nversions = src |> filter(fn: (r) => exists r.version and r.version != \"700\") \r\n               |> keep(columns: [\"version\",\"sessionID\"])\r\nstates   = src |> filter(fn: (r) => exists r.sessionState )\r\n               |> keep(columns: [\"sessionState\",\"sessionID\",\"_time\"])    \r\n\r\nrichCpu = join( tables: {v:versions,cpu:cpu}, on: [\"sessionID\"])\r\n\r\nricherCpu  = join(tables: {\"cpu\":richCpu, \"state\":states}, on: [\"sessionID\"]) \r\n               |> filter(fn: (r) => r[\"_time_state\"] < r[\"_time_cpu\"] )\r\n               |> group(columns: [\"_value\",\"_time_cpu\"]) |> max(column: \"_time_state\")\r\n               |> rename(columns: {\"_time_cpu\":\"_time\"}) \r\n\r\n// yield richerCpu\r\n\r\nricherCpu \r\n    |> group(columns: [\"sessionID\", \"sessionState\",\"version\"])\r\n    |> window(every: 5s) |> mean()\r\n    |> group(columns: [\"sessionID\", \"sessionState\", \"version\"]) |> max()",
+        "editMode": "advanced",
+        "name": "",
+        "builderConfig": {
+         "buckets": [],
+         "tags": [
+          {
+           "key": "_measurement",
+           "values": [],
+           "aggregateFunctionType": "filter"
+          }
+         ],
+         "functions": [
+          {
+           "name": "mean"
+          }
+         ],
+         "aggregateWindow": {
+          "period": "auto",
+          "fillValues": false
+         }
+        }
+       }
+      ],
+      "colors": [
+       {
+        "id": "a9e744df-b711-45bd-b8f8-8d79a58d4ad9",
+        "type": "scale",
+        "hex": "#31C0F6",
+        "name": "Nineteen Eighty Four",
+        "value": 0
+       },
+       {
+        "id": "0eec59d4-1747-4974-bc25-1f8299d1a3e1",
+        "type": "scale",
+        "hex": "#A500A5",
+        "name": "Nineteen Eighty Four",
+        "value": 0
+       },
+       {
+        "id": "1bf5af6a-9834-4187-b03d-9905c7759b4a",
+        "type": "scale",
+        "hex": "#FF7E27",
+        "name": "Nineteen Eighty Four",
+        "value": 0
+       }
+      ],
+      "xColumn": "_value",
+      "fillColumns": [
+       "sessionState"
+      ],
+      "xDomain": [
+       0,
+       1
+      ],
+      "xAxisLabel": "CPU max",
+      "position": "stacked",
+      "binCount": 30,
+      "note": "",
+      "showNoteWhenEmpty": false,
+      "legendColorizeRows": true,
+      "legendHide": false,
+      "legendOpacity": 1,
+      "legendOrientationThreshold": 100000000
+     }
+    }
+   }
+  ]
+ },
+ "labels": []
+}
