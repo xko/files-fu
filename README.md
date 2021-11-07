@@ -20,13 +20,12 @@ which aims to provide good coverage of the features requested by the assignment 
 - JDK and SBT available on `$PATH`to build and run the service
 - Running [InfluxDB](https://www.influxdata.com/get-influxdb/) instance to store the data and render the reports. 
   This was tested with free tier of the [Cloud service](https://www.influxdata.com/products/influxdb-cloud/), but local install should work as well   
-  - an API token with full access rights
-    - we assume you have separate organization in Influx for this demo, or at least don't have anything important in there 
+  - an API token with full access rights (unsafe, but we assume you have separate organization in Influx for this demo, or at least don't have anything important in there)
 - [InfluxDB CLI](https://github.com/influxdata/influx-cli)  available on `$PATH`to [initialize DB](bin/reset-data) and run the [query examples](src/main/flux)
 
 #### 1. Configuration
 
-- create `src/it/resources/influx-auth.properties` with 
+- create `src/main/resources/influx-auth.properties` with 
   ```
   user="<your organization>"
   password="<your API token>"
