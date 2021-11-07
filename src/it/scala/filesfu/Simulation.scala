@@ -1,8 +1,9 @@
-package filesfu.collector
+package filesfu
 
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes}
 import akka.http.scaladsl.testkit.{RouteTestTimeout, ScalatestRouteTest}
 import akka.testkit.TestDuration
+import filesfu.collector.Server
 import filesfu.collector.protocol.Messages._
 import org.scalacheck.{Gen, Shrink}
 import org.scalatest.matchers.should.Matchers
@@ -12,8 +13,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import java.util.UUID
 import scala.concurrent.duration._
 
-
-class InfluxIntegration extends AnyWordSpec with Matchers with ScalatestRouteTest with ScalaCheckPropertyChecks
+class Simulation extends AnyWordSpec with Matchers with ScalatestRouteTest with ScalaCheckPropertyChecks
   with SessionGenerators {
 
   implicit def noShrink[T]: Shrink[T] = Shrink.shrinkAny
@@ -38,7 +38,7 @@ class InfluxIntegration extends AnyWordSpec with Matchers with ScalatestRouteTes
     }
 
 
-  "client" can {
+  "client" can  {
     val Path = "/streams/sessions"
     import SessionState._
 
@@ -54,7 +54,7 @@ class InfluxIntegration extends AnyWordSpec with Matchers with ScalatestRouteTes
       postLines(Path, s"{\"sessionID\":\"$sid\", \"state\":\"over\", \"timestamp\": ${phase(over).startAt} }")
     }
 
-    "post sessions with high CPU at login" ignore {
+    "post sessions with high CPU at login"  in {
       val versions = Gen.oneOf(Seq("700"))
       val phases = phaseGen(System.currentTimeMillis() - 3600000,
                             (start, normal, 2.seconds),
