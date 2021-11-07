@@ -44,3 +44,9 @@ Use the following SBT commands:
   - it currently only supports `POST` at the path `/sessions` and accepts JSON messages - one per line. The message structure is defined
     in [Messages.scala](src/main/scala/filesfu/collector/protocol/Messages.scala)
 
+#### 3. Report example
+
+To illustrate how the report could look like we created some histograms for the InfluxDB web console. To recreate it, navigate to Dashboards->Create dashboard->Import dashboard. Import [example-dashboard.json](src/main/flux/example-dashboard.json). With the data from the simulation above it would look like:
+
+![image](https://user-images.githubusercontent.com/8439412/140663667-8b7b20ff-8b7a-4ba4-9f7a-0518aa75df9d.png)
+
