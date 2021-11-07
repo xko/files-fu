@@ -31,5 +31,16 @@ which aims to provide good coverage of the features requested by the assignment 
   password="<your API token>"
   ```
   this will be used by scala code in integration tests and simulation 
-- run `bin/init-config` to initialize your `~/.influxdbv2/configs` for the CLI  
+- run `bin/init-config` to initialize your `~/.influxdbv2/configs` for the CLI
+
+#### 2. Building and running
+
+Use the following SBT commands:
+- `test` : to build and unit test as usual
+- `it:testOnly filesfu.Acceptance` : small acceptance test to make sure data really ends up in influx
+- `it:testOnly filesfu.Simulation` : a simulation, feeding random data to illustrate particular scenario. After this is done, reports in the next section should show something sensible
+  -  the [source](src/it/scala/filesfu/Simulation.scala) can be modified to alter the scenario
+-  `run` : to simply run the server to play with it using `curl` or similar tool
+  - it currently only supports `POST` at the path `/sessions` and accepts JSONN messages - one per line. The message structure is defined
+    in [Messages.scala](src/main/scala/filesfu/collector/protocol/Messages.scala)
 
