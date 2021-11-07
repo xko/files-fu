@@ -1,11 +1,9 @@
 package filesfu
 
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes}
-import akka.http.scaladsl.testkit.{RouteTestTimeout, ScalatestRouteTest}
+import akka.http.scaladsl.testkit.RouteTestTimeout
 import akka.testkit.TestDuration
-import filesfu.collector.Server
 import filesfu.collector.protocol.Messages._
-import org.scalacheck.{Gen, Shrink}
+import org.scalacheck.Gen
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -13,29 +11,11 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import java.util.UUID
 import scala.concurrent.duration._
 
-class Simulation extends AnyWordSpec with Matchers with ScalatestRouteTest with ScalaCheckPropertyChecks
-  with SessionGenerators {
-
-  implicit def noShrink[T]: Shrink[T] = Shrink.shrinkAny
-  // https://gist.github.com/davidallsopp/f65d73fea8b5e5165fc3#gistcomment-2339650
+class Simulation extends AnyWordSpec with Matchers with ScalaCheckPropertyChecks with ITCommon {
 
   implicit val timeout = RouteTestTimeout(10.seconds.dilated)
 
-  def postLines(path: String, lines: String*) = {
-    println(lines.mkString("\n"))
-    Post(path).withEntity(HttpEntity(ContentTypes.`application/json`, lines.mkString("\n"))) ~>
-      Server.routes ~> check {
-      status shouldBe StatusCodes.OK
-      responseAs[String] shouldBe s"{\"msg\":\"Total messages received: ${lines.size}\"}"
-    }
-  }
 
-  def postCPU(path: String, sid: String, cpus: (Double, EpochMs)*) = {
-      val lines = cpus.map { case (cpu, time) =>
-        s"{\"timestamp\":$time,\"sessionID\":\"$sid\", \"cpu\":$cpu }"
-      }
-      postLines(path, lines: _*)
-    }
 
 
   "client" can  {

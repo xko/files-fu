@@ -1,12 +1,17 @@
 package filesfu
 
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes}
+import akka.http.scaladsl.testkit.ScalatestRouteTest
+import filesfu.collector.Server
 import filesfu.collector.protocol.Messages.SessionState
-import org.scalacheck.Gen
+import org.scalacheck.{Gen, Shrink}
 import org.scalacheck.Gen.{choose, frequency, listOfN}
+import org.scalatest.Suite
+import org.scalatest.matchers.should.Matchers
 
 import scala.concurrent.duration.Duration
 
-trait SessionGenerators {
+trait ITCommon extends ScalatestRouteTest with Matchers { this: Suite =>
   type CPU = Double
   type EpochMs = Long
 
@@ -39,6 +44,25 @@ trait SessionGenerators {
            others <- phaseGen(startAt + duration.toMillis + 1, tail: _*)
            } yield others + thiz
   }
+  def postLines(path: String, lines: String*) = {
+    println(lines.mkString("\n"))
+    Post(path).withEntity(HttpEntity(ContentTypes.`application/json`, lines.mkString("\n"))) ~>
+      Server.routes ~> check {
+      status shouldBe StatusCodes.OK
+      responseAs[String] shouldBe s"{\"msg\":\"Total messages received: ${lines.size}\"}"
+    }
+  }
+
+  def postCPU(path: String, sid: String, cpus: (Double, EpochMs)*) = {
+    val lines = cpus.map { case (cpu, time) =>
+      s"{\"timestamp\":$time,\"sessionID\":\"$sid\", \"cpu\":$cpu }"
+    }
+    postLines(path, lines: _*)
+  }
+
+  implicit def noShrink[T]: Shrink[T] = Shrink.shrinkAny
+  // https://gist.github.com/davidallsopp/f65d73fea8b5e5165fc3#gistcomment-2339650
+
 
 
 }
