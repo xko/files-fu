@@ -14,7 +14,7 @@ coming up with reasonable assumptions, making implementation choices etc. - this
 Most important are collected on [Overview board](../../projects/5), please refer there for technical discussion, design notes etc. 
 This README focuses further on now to build and run the demo.  
 
-### Running it
+### The demo
 
 #### 0. Prerequisites
 
