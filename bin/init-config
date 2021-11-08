@@ -2,7 +2,7 @@
 set -x
 
 if [ `influx config ls | wc -l` -lt 2 ];then
-    . $(dirname "$0")/../src/it/resources/influx-auth.properties
+    . $(dirname "$0")/../src/main/resources/influx-auth.properties
      influx config create --config-name FilesFU  --host-url https://eu-central-1-1.aws.cloud2.influxdata.com \
                            --org $user  --token $password  --active
 fi 
