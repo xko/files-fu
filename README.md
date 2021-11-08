@@ -12,6 +12,7 @@ This is a proof-of-concept demo, addressing some aspects of the [home assignment
 The task is very open-ended, and the assignment allows much room for the interpretation. A lot of work where therefore put into extracting the requirements, 
 coming up with reasonable assumptions, making implementation choices etc. - this is all documented in the [tickets](../../issues/). 
 Most important are collected on [Overview board](../../projects/5), please refer there for technical discussion, design notes etc. 
+
 This README focuses further on now to build and run the demo.  
 
 ### The demo
