@@ -59,7 +59,7 @@ Since it's stateless, no special handling is needed
 > Which database or database family to use, if any, and what schema would it have?
 > Do you need to store everything the client sends?
 
-After [some research](../../issues/14) in this case we decided to use InfluxDB - a feature-rich time-series database. And yes - store everything client sends. 
-The records store all the information from the messages as [tags](https://docs.influxdata.com/influxdb/v2.1/reference/key-concepts/data-elements/#tags), except the CPU which is [field](https://docs.influxdata.com/influxdb/v2.1/reference/key-concepts/data-elements/#fields) 
+After [some research](../../issues/14)  we decided to use InfluxDB - a feature-rich time-series database. And yes - store everything client sends. 
+We store all the information from the messages as [tags](https://docs.influxdata.com/influxdb/v2.1/reference/key-concepts/data-elements/#tags), except the CPU which is [field](https://docs.influxdata.com/influxdb/v2.1/reference/key-concepts/data-elements/#fields) 
 apart from this distinction InfluxDB is schema-free. 
 
