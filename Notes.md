@@ -26,7 +26,7 @@ application state and other parameters (see [Messages object](../../blob/master/
 
 Looks reasonable to measure CPU  as often as possible, but without impacting client system - needs research. 
 1-2kb/s is reasonable traffic to consume - enough to send 10 x100-byte messages per second. 
-Current impl (#21)  streaming protocol allowing request of any length, without need to terminate. It seems good idea for the client just to keep connection open and send data as it comes, in this case server would backpressure if it's overloaded and client could handle this e.g. by taking measures less often.
+Current impl. uses streaming protocol allowing request of any length, without need to terminate. It seems good idea for the client just to keep connection open and send data as it comes, in this case server would backpressure if it's overloaded and client could handle this e.g. by taking measures less often.
   
 > What happens if the backend is unavailable?
 > What happens if the client fails to send data because it consumed all the CPU?
