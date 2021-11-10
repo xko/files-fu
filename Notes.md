@@ -71,3 +71,32 @@ Alpakka connector uses legacy 1.x api, which needed a little [hack](../blob/mast
 
 The protocol messages are defined in [Messages object](../../blob/master/src/main/scala/filesfu/collector/protocol/Messages.scala).
 Currently only `/sessions` endpoint is implemented, accepting `Session` messages
+
+## The report
+
+> The collected data should be processed and aggregated in an intuitive way
+such that it helps troubleshooting which clients are having a problem with the CPU usage. Service is
+responsible for generating the report on the data. 
+
+> Report is intended for Head of Product in FilesForYou so she can get an idea of how bad the
+> issue is (for an API-based report, assume that we build a web UI).
+
+> Aim to design a solution that would cover the problem enough to draw the conclusions about
+the affected clients, so that the client team can triage their code and locate the faulty
+changeset
+
+We will focus on 1 core metric - %CPU consumed by our app. Report should relate it to other metrics/properties/events of the app lifecycle.
+An ideal report would allow drilldowns like:
+
+- over the last 12 hours 30% of the sessions had CPU over 30%, of those:
+  - 80% where running version 6.04, of those:
+      - 42% had CPU over 30% when indexing local files
+      - 5% had CPU over 80% when receiving files, of those:
+        - 98% where receiving file with name longer than 42 characters 
+  - 10% where running version 6.05, of those:
+     - 100% had CPU over 80% (oops)
+
+Our example is a bit more limited: We were able to indentify version 700 conusming more than the others (1). Zooming into that version we've localized the peaks to login stage(2). 
+![image](https://user-images.githubusercontent.com/8439412/141116146-83ea29ca-747e-45cd-b373-6607d1f4091f.png)
+
+This dashboard in exported as [JSON](src/main/flux/example-dashboard.json) and can be imported to any InfluxDB instance. If it's fed with our simulation data, the dashboard would show something similar. Some queries from this report are also [available separately](src/main/flux/) 
