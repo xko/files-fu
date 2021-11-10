@@ -48,18 +48,18 @@ We simulate the client in [Integration Tests](../tree/master/src/it). The [Simul
 > In order to find out what is going wrong we want you to design a service that handles CPU data
 > reported to our backend.
 
-> 2. How does the API look like, which protocol does it use, and why?
+> How does the API look like, which protocol does it use, and why?
 
 We accept messages by http POST, formatted as [JSON lines](https://jsonlines.org/) - each line of the request body is a message. They are treated as a stream, fed directly to the database. There's no restriction on the request length, nor need to close it. It seems good idea for the client just to keep connection open and send data as it comes, in this case server would backpressure if it's overloaded and client could handle this e.g. by taking measures less often.
 
-> 4. How does the service handle scaling, restarts, crashes etc.?
+> How does the service handle scaling, restarts, crashes etc.?
 
 Since it's stateless, no special handling is needed
 
-> 5. Which database or database family to use, if any, and what schema would it have?
-> 6. Do you need to store everything the client sends?
+> Which database or database family to use, if any, and what schema would it have?
+> Do you need to store everything the client sends?
 
-In this case we decided to use InfluxDB - a feature-rich time-series database (see [feature comparison](../../issues/14)).  And yes - store everything client sends. 
+After [some research](../../issues/14) in this case we decided to use InfluxDB - a feature-rich time-series database. And yes - store everything client sends. 
 The records store all the information from the messages as _tags_, except the CPU which is _field_ 
-(more details [here](https://docs.influxdata.com/influxdb/v2.1/reference/key-concepts/data-elements/)), apart from this distinction Influx is rather schema-free. 
+apart from [this distinction](https://docs.influxdata.com/influxdb/v2.1/reference/key-concepts/data-elements/) InfluxDB schema-free. 
 
