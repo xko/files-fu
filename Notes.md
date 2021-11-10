@@ -69,4 +69,5 @@ It is very simple http server, implemented with Akka Http and using [alpakka con
 Nice detail is that entire pipeline is made of Akka streams, so it can propagate backpressure from the database all the way down to the client. 
 Alpakka connector uses legacy 1.x api, which needed a little [hack](../blob/master/bin/reset-data) at setup stage, but having Akka streams all the way through certainly worth it.
 
-The protocol messages Message structures are defined in [Messages object](../../blob/master/src/main/scala/filesfu/collector/protocol/Messages.scala). Currently only `/sessions` endpoint is implemented accepting `Session` messages
+The protocol messages are defined in [Messages object](../../blob/master/src/main/scala/filesfu/collector/protocol/Messages.scala).
+Currently only `/sessions` endpoint is implemented, accepting `Session` messages
