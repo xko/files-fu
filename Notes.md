@@ -20,7 +20,7 @@ coming up with reasonable assumptions, making implementation choices etc. - thes
 > Which information does the client pass to the service?
 
 We will focus on 1 core _metric_ - %CPU consumed by our app - this is measured periodically. Also we send _events_ , so that we can relate CPU value at particular moment to
-application state and other parameters (see [Messages object](../../blob/master/src/main/scala/filesfu/collector/protocol/Messages.scala))
+application state and other parameters (see [Messages object](src/main/scala/filesfu/collector/protocol/Messages.scala))
 
 > How often does the client send data?
 
@@ -41,7 +41,7 @@ This is likely to be several MB, so we ask the user explicitly before we do this
 > something, like client id, please feel free to assume it does, and place any constraints on it. You
 > can write a simple client implementation or use any API tools available to simulate the requests.
 
-We simulate the client in [Integration Tests](../tree/master/src/it). The [Simulation.scala](../../blob/master/src/it/scala/filesfu/Simulation.scala) uses Akka Http testkit together with ScalaCheck generators to feed random data with probabilities tuned for the case, illustrated by our example report (see below) 
+We simulate the client in [Integration Tests](src/it). The [Simulation.scala](src/it/scala/filesfu/Simulation.scala) uses Akka Http testkit together with ScalaCheck generators to feed random data with probabilities tuned for the case, illustrated by our example report (see below) 
 
 ## The collector (backend)
 
@@ -67,9 +67,9 @@ apart from this distinction InfluxDB is schema-free.
 
 It is very simple http server, implemented with Akka Http and using [alpakka connector](https://doc.akka.io/docs/alpakka/current/influxdb.html) to write to InfluxDB. 
 Nice detail is that entire pipeline is made of Akka streams, so it can propagate backpressure from the database all the way down to the client. 
-Alpakka connector uses legacy 1.x api, which needed a little [hack](../blob/master/bin/reset-data) at setup stage, but having Akka streams all the way through certainly worth it.
+Alpakka connector uses legacy 1.x api, which needed a little [hack](bin/reset-data) at setup stage, but having Akka streams all the way through certainly worth it.
 
-The protocol messages are defined in [Messages object](../../blob/master/src/main/scala/filesfu/collector/protocol/Messages.scala).
+The protocol messages are defined in [Messages object](src/main/scala/filesfu/collector/protocol/Messages.scala).
 Currently only `/sessions` endpoint is implemented, accepting `Session` messages
 
 ## The report
@@ -100,3 +100,30 @@ Our example is a bit more limited: We were able to indentify version 700 conusmi
 ![image](https://user-images.githubusercontent.com/8439412/141116146-83ea29ca-747e-45cd-b373-6607d1f4091f.png)
 
 This dashboard in exported as [JSON](src/main/flux/example-dashboard.json) and can be imported to any InfluxDB instance. If it's fed with our simulation data, the dashboard would show something similar. Some queries from this report are also [available separately](src/main/flux/) 
+
+## Alternative ideas
+
+>we spend 10 mins of the interview talking about a less practical approach -- just to explore in which direction you'd take it without Flux. Feel free to take some notes on how the solution _could_ look like;
+
+The main question is about introducing the _state_ in Data Collector layer. If it's stateful - i.e. has to keep some information between messages coming from client - this introduces a lot of questions regarding load balancing, failover etc. In general I would try to keep it simple and just forward the messages to DB  as long as it is able to handle the volume. 
+
+If it cannot - some aggregation/reduction has to happen before the data is stored.  Here are some possibilities:
+- the "watchdog" component could average the measurements over short time windows (like 1-5s)
+  - but has to be smart send at least one measurement for for short events (like login, or incoming file)
+  - it has advantage of dealing with only one session at time
+-  if that is not enough the collector has to keep the state for each session and do aggregation by its own
+  - this can be simply averaging over time windows, like above 
+  - can also reduce it to the session-level. I.e.:
+     - keep info about particular session in memory
+     - computing aggregates on the go. 
+     - store running values periodically
+     - clean the the in-memory storage when the session is over
+     - "memory" can be local memory, but can also use sth like Redis
+     - load balancer has to care about mapping sessions to instances
+       - for this we'd change the endpoint path to look like /sessions/{SessionID}
+- another idea is to use intermediate  storage, capable of keeping reader's position, e.g. Kafka. We have more components in this case:
+  - simple stateless proxy sending everything it gets from client to kafka
+  - "aggregator" consuming from kafka and reducing the data to session level
+    - we set kafka partitioning key to the session id, so single session always go to one aggregator instance  
+    - it will commit to kafka only after things are computed and stored to DB
+      - no worries about failover this way - if one breaks, other picks up the session as a whole  
