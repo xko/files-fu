@@ -17,15 +17,6 @@ coming up with reasonable assumptions, making implementation choices etc. - thes
   - format the data as json messages and send to the #7 over the net
   - not in scope of this project, but can also terminate/restart main process in case of problems  
 
-> Please feel free to omit most of the client implementation, and if you want client to send
-> something, like client id, please feel free to assume it does, and place any constraints on it. You
-> can write a simple client implementation or use any API tools available to simulate the requests.
-
-We simulate the client in [Integration Tests](../tree/master/src/it)  (#22).  
-
-> Details like authentication or an actual way to measure CPU consumption can be mentioned but
-> please don't focus on that part of the solution.
-> 
 > Which information does the client pass to the service?
 
 We will focus on 1 core _metric_ - %CPU consumed by our app - this is measured periodically. Also we send _events_ , so that we can relate CPU value at particular moment to
@@ -56,4 +47,8 @@ Currently only `/sessions` endpoint is implemented accepting `Session` messages
 
 #### Simulation
 
-The [Simulation.scala](../../blob/master/src/it/scala/filesfu/Simulation.scala) uses Akka Http testkit together with ScalaCheck generators to feed random data with probabilities tuned for the case, illustrated by our example report (see below) 
+> Please feel free to omit most of the client implementation, and if you want client to send
+> something, like client id, please feel free to assume it does, and place any constraints on it. You
+> can write a simple client implementation or use any API tools available to simulate the requests.
+
+We simulate the client in [Integration Tests](../tree/master/src/it). The [Simulation.scala](../../blob/master/src/it/scala/filesfu/Simulation.scala) uses Akka Http testkit together with ScalaCheck generators to feed random data with probabilities tuned for the case, illustrated by our example report (see below) 
