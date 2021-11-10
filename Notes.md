@@ -63,3 +63,10 @@ After [some research](../../issues/14)  we decided to use InfluxDB - a feature-r
 We store all the information from the messages as [tags](https://docs.influxdata.com/influxdb/v2.1/reference/key-concepts/data-elements/#tags), except the CPU which is [field](https://docs.influxdata.com/influxdb/v2.1/reference/key-concepts/data-elements/#fields) 
 apart from this distinction InfluxDB is schema-free. 
 
+### Implementation
+
+It is very simple http server, implemented with Akka Http and using [alpakka connector](https://doc.akka.io/docs/alpakka/current/influxdb.html) to write to InfluxDB. 
+Nice detail is that entire pipeline is made of Akka streams, so it can propagate backpressure from the database all the way down to the client. 
+Alpakka connector uses legacy 1.x api, which needed a little [hack](../blob/master/bin/reset-data) at setup stage, but having Akka streams all the way through certainly worth it.
+
+The protocol messages Message structures are defined in [Messages object](../../blob/master/src/main/scala/filesfu/collector/protocol/Messages.scala). Currently only `/sessions` endpoint is implemented accepting `Session` messages
