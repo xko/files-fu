@@ -5,8 +5,6 @@ coming up with reasonable assumptions, making implementation choices etc. - thes
 
 ## The client 
 
-### Assumptions and discussion
-
 - we assume a torrent-like thing, running in background
   - app activity and user interaction are mostly decoupled - user requests/shares files, not expecting immediate 
      arrival/delivery 
