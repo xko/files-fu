@@ -3,13 +3,9 @@
 The task is very open-ended, and the assignment allows much room for the interpretation. A lot of work where therefore put into extracting the requirements, 
 coming up with reasonable assumptions, making implementation choices etc. - these originally came as [tickets](../../issues/). This document compiles the notes for esasier reading.
 
-## Features 
+## The client 
 
-These are high level aspects the functionality or the project contents. Essentially, this is how the task was understood and what is assumed about it.
-
-### The client 
-
-#### Assumptions and discussion
+### Assumptions and discussion
 
 - we assume a torrent-like thing, running in background
   - app activity and user interaction are mostly decoupled - user requests/shares files, not expecting immediate 
@@ -32,7 +28,8 @@ We simulate the client in [Integration Tests](../tree/master/src/it)  (#22).
 > 
 > Which information does the client pass to the service?
 
-see #21 
+We will focus on 1 core _metric_ - %CPU consumed by our app - this is measured periodically. Also we send _events_ , so that we can relate CPU value at particular moment to
+application state and other parameters (see [Messages object](../../blob/master/src/main/scala/filesfu/collector/protocol/Messages.scala))
 
 > How often does the client send data?
 
@@ -47,7 +44,16 @@ Client (or watchdog) would also write logs to disk and keep them for some sensib
 logs are sent to collector which parses them and reconstructs the metrics, events and their timestamps. 
 This is likely to be several MB, so we ask the user explicitly before we do this. On the collector side separate endpoint is needed for that - not implemented here. 
 
-
 ### Implementation
-- [x] #21
-- [x] #22
+
+#### Protocol
+
+We accept messages by http POST, formatted as [JSON lines](https://jsonlines.org/) - each line of the request body is a message. They are treated as a stream, fed directly to the database. There's no restriction on the request length, nor need to close it. It seems good idea for the client just to keep connection open and send data as it comes, in this case server would backpressure if it's overloaded and client could handle this e.g. by taking measures less often.
+
+Message structures are defined in [Messages object](../../blob/master/src/main/scala/filesfu/collector/protocol/Messages.scala) 
+
+Currently only `/sessions` endpoint is implemented accepting `Session` messages
+
+#### Simulation
+
+The [Simulation.scala](../../blob/master/src/it/scala/filesfu/Simulation.scala) uses Akka Http testkit together with ScalaCheck generators to feed random data with probabilities tuned for the case, illustrated by our example report (see below) 
