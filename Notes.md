@@ -109,16 +109,16 @@ If it cannot - some aggregation/reduction has to happen before the data is store
 - the "watchdog" component could average the measurements over short time windows (like 1-5s)
   - but has to be smart send at least one measurement for for short events (like login, or incoming file)
   - it has advantage of dealing with only one session at time
--  if that is not enough the collector has to keep the state for each session and do aggregation by its own
+- if that is not enough the collector has to keep the state for each session and do aggregation by its own
   - this can be simply averaging over time windows, like above 
   - can also reduce it to the session-level. I.e.:
-     - keep info about particular session in memory
-     - computing aggregates on the go. 
-     - store running values periodically
-     - clean the the in-memory storage when the session is over
-     - "memory" can be local memory, but can also use sth like Redis
-     - load balancer has to care about mapping sessions to instances
-       - for this we'd change the endpoint path to look like /sessions/{SessionID}
+    - keep info about particular session in memory
+    - computing aggregates on the go. 
+    - store running values periodically
+    - clean the the in-memory storage when the session is over
+    - "memory" can be local memory, but can also use sth like Redis
+    - load balancer has to care about mapping sessions to instances
+      - for this we'd change the endpoint path to look like /sessions/{SessionID}
 - another idea is to use intermediate  storage, capable of keeping reader's position, e.g. Kafka. We have more components in this case:
   - simple stateless proxy sending everything it gets from client to kafka
   - "aggregator" consuming from kafka and reducing the data to session level
