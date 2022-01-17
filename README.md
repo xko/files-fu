@@ -1,4 +1,4 @@
-CPU usage reporting and analysis demo
+CPU metrcis collecition and analysis demo
 -----------------------------
 
 _Future of the [Files-Fu](../.. "assignment mentions both 'FilesForYou' and 'FilesFromYou', I came up with this variant instead - IMO cooler and punchier. BTW I'd like to retain the rights for the name, maybe one day I'll use it for a startup :)") - a revolutionary file sharing service - is in danger, as their client app seems to consume too much CPU, 
