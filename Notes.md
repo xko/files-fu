@@ -1,7 +1,7 @@
 # Implementation notes
 
 The task is very open-ended, and the assignment allows much room for the interpretation. A lot of work where therefore put into extracting the requirements, 
-coming up with reasonable assumptions, making implementation choices etc. - these originally came as [tickets](../../issues/).
+coming up with reasonable assumptions, making implementation choices etc. - these originally came as [tickets](../../projects/5).
 This document compiles the notes for easier reading.
 
 ## The client 
